@@ -25,6 +25,7 @@ const server = createServer(app);
 // 中间件
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // 增加服务器超时设置（关键修复）
 server.setTimeout(30 * 60 * 1000); // 30分钟超时
@@ -91,8 +92,13 @@ app.get('/health', async (req, res) => {
     }
 });
 
-// 根路径
+// 提供前端页面
 app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// 保留API信息端点，放到其他路径，比如 /api
+app.get('/api', (req, res) => {
     res.json({
         message: '视频分享平台 API',
         version: '1.0.0',
